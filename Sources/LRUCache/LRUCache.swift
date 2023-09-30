@@ -4,8 +4,8 @@
 /// An LRU cahce implement.
 public final class LRUCache<Key: Hashable, Val> {
     private var map: [Key: Entry] = [:]
-    private var head: Entry?
-    private var tail: Entry?
+    private let head: Entry
+    private let tail: Entry
     
     public let cap: Int
     
@@ -18,8 +18,8 @@ public final class LRUCache<Key: Hashable, Val> {
         self.head = Entry()
         self.tail = Entry()
         
-        self.head?.next = self.tail
-        self.tail?.prev = self.head
+        self.head.next = self.tail
+        self.tail.prev = self.head
     }
 }
 
@@ -42,7 +42,7 @@ public extension LRUCache {
     /// Return ordered values.
     var orderedValues: [Val?] {
         var res = [Val?]()
-        var next = self.head?.next
+        var next = self.head.next
         while next !== self.tail {
             res.append(next?.val)
             next = next?.next
@@ -53,7 +53,7 @@ public extension LRUCache {
     /// Return ordered keys.
     var orderedKeys: [Key] {
         var res = [Key]()
-        var next = self.head?.next
+        var next = self.head.next
         while next !== self.tail {
             if let key = next?.key {
                 res.append(key)
@@ -142,15 +142,15 @@ public extension LRUCache {
     /// keep capacity, default is false.
     func removeAll(keepingCapacity keepCapacity: Bool = false) {
         self.map.removeAll(keepingCapacity: keepCapacity)
-        self.head?.next = self.tail
-        self.tail?.prev = self.head
+        self.head.next = self.tail
+        self.tail.prev = self.head
     }
 }
 
 private extension LRUCache {
     @discardableResult
     func popLast() -> Entry? {
-        let prev = self.tail?.prev
+        let prev = self.tail.prev
         guard prev !== self.head else {
             return nil
         }
@@ -161,9 +161,9 @@ private extension LRUCache {
     }
     
     func attachToHead(_ node: Entry) {
-        node.next = self.head?.next
+        node.next = self.head.next
         node.prev = self.head
-        self.head?.next = node
+        self.head.next = node
         node.next?.prev = node
     }
     
